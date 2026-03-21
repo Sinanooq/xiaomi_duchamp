@@ -206,6 +206,19 @@ persist.vendor.sys.fp.expolevel=0x88
 persist.vendor.fingerprint.type=udfps_optical
 persist.vendor.fingerprint.sensor_location=610|2442|114
 
+# FOD location and size (duchamp UDFPS)
+persist.vendor.sys.fp.fod.location.X_Y=504,2332
+persist.vendor.sys.fp.fod.size.width_height=210,210
+persist.vendor.sys.fp.fp_anti_mistouch=true
+ro.hardware.fp.fod=true
+ro.hardware.fp.fod.location=low
+ro.hardware.fp.fod.touch.ctl.version=2.0
+ro.hardware.fp.mievent=true
+
+# FOD dim layer / HBM for screen-off UDFPS
+persist.vendor.sys.fp.fod.dimlayer.hbm=1
+persist.vendor.sys.fp.fod.dimlayer.fp=1
+
 # FUSE passthrough
 persist.sys.fuse.passthrough.enable=true
 
@@ -220,6 +233,9 @@ persist.vendor.mtk_dynamic_ims_switch=1
 persist.vendor.mtk_wfc_support=1
 persist.vendor.viwifi_support=1
 persist.vendor.vonr_setting_support=1
+# VoNR/ViNR enable (mt6897-devs'te kapalıydı)
+persist.vendor.mtk.vonr.enable=1
+persist.vendor.mtk.vinr.enable=1
 ro.vendor.md_auto_setup_ims=1
 ro.vendor.mtk_cta_set=1
 ro.vendor.mtk_data_config=1
@@ -275,7 +291,9 @@ ro.telephony.iwlan_operation_mode=AP-assisted
 ro.telephony.sim.count=2
 ro.vendor.md_prop_ver=1
 ro.vendor.mtk_c2k_lte_mode=2
-ro.vendor.mtk_c2k_support=1
+# C2K — duchamp desteklemiyor
+ro.vendor.mtk_c2k_support=0
+ro.vendor.mtk_c2k_lte_mode=0
 ro.vendor.mtk_eccci_c2k=1
 ro.vendor.mtk_external_sim_only_slots=0
 ro.vendor.mtk_external_sim_support=1
@@ -307,16 +325,23 @@ persist.vendor.sensor.powbrightness=400
 ro.vendor.mtk.sensor.support=yes
 ro.vendor.sensors.xiaomi.udfps=true
 
-# SurfaceFlinger
-debug.sf.early.app.duration=11600000
-debug.sf.early.sf.duration=12300000
-debug.sf.earlyGl.app.duration=11600000
-debug.sf.earlyGl.sf.duration=12300000
+# SurfaceFlinger — phase offsets (cihazdan alınan gerçek değerler)
+debug.sf.early.app.duration=20000000
+debug.sf.early.sf.duration=27600000
+debug.sf.earlyGl.app.duration=20000000
+debug.sf.earlyGl.sf.duration=27600000
+debug.sf.late.app.duration=20000000
+debug.sf.late.sf.duration=15600000
+debug.sf.high_fps.early.app.duration=10000000
+debug.sf.high_fps.early.sf.duration=13800000
+debug.sf.high_fps.earlyGl.app.duration=10000000
+debug.sf.high_fps.earlyGl.sf.duration=13800000
+debug.sf.high_fps.late.app.duration=10000000
+debug.sf.high_fps.late.sf.duration=13800000
+debug.sf.hwc.min.duration=2000000
 debug.sf.enable_gl_backpressure=0
 debug.sf.enable_hwc_vds=0
 debug.sf.frame_rate_multiple_threshold=120
-debug.sf.late.app.duration=11600000
-debug.sf.late.sf.duration=12300000
 debug.sf.predict_hwc_composition_strategy=0
 debug.sf.set_idle_timer_ms=1100
 debug.sf.treat_170m_as_sRGB=1
@@ -347,6 +372,11 @@ ro.vendor.wifi.sap.concurrent.iface=ap1
 ro.vendor.wifi.sap.interface=ap0
 ro.vendor.wlan.chrdev=wmt_chrdev_wifi_connac2
 ro.vendor.wlan.gen=gen4m_6897
+# Hotspot DFS kanalları (5GHz band 52-140)
+wifi.softap.acs_include_dfs=true
+
+# Charger — kapalıyken şarj modunda kal, boot etme
+ro.enable_boot_charger_mode=1
 
 # ZRAM writeback
 ro.zram.mark_idle_delay_mins=60

@@ -80,3 +80,31 @@ prebuilt_etc {
     filename: "ueventd.rc",
     vendor: true,
 }
+
+prebuilt_etc {
+    name: "init.wlan_drv.rc",
+    src: "etc/init.wlan_drv.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "mtkpower_applist-mtk-default.rc",
+    src: "etc/mtkpower_applist-mtk-default.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "vendor.mediatek.hardware.mtkpower@1.0-init.rc",
+    src: "etc/vendor.mediatek.hardware.mtkpower@1.0-init.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "wlan_assistant.rc",
+    src: "etc/wlan_assistant.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}

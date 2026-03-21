@@ -36,18 +36,21 @@
          range string like '1-6,11'. -->
     <string translatable="false" name="config_wifiSoftap2gChannelList">1-13</string>
 
-    <!-- List of allowed channels in 5GHz band for softap. If the device doesn't want to restrict
-         channels this should be empty. Values is a comma separated channel string and/or channel
-         range string like '36-48,149'. -->
-    <string translatable="false" name="config_wifiSoftap5gChannelList">36,38,40,42,44,46,48,149,153,157,161,165</string>
+    <!-- List of allowed channels in 5GHz band for softap.
+         Includes both non-DFS (36-48, 149-165) and DFS (52-140) channels.
+         Empty string means no restriction — driver/ACS picks the best channel. -->
+    <string translatable="false" name="config_wifiSoftap5gChannelList"></string>
 
-    <!-- List of allowed channels in 6GHz band for softap. If the device doesn't want to restrict
-         channels this should be empty. Values is a comma separated channel string and/or channel
-         range string like '36-48,149'. -->
-    <string translatable="false" name="config_wifiSoftap6gChannelList">5,21,37,53,69,85,101,117,133,149,165,181,197,213,229</string>
+    <!-- List of allowed channels in 6GHz band for softap.
+         Empty — TR regulatory does not permit 6GHz AP operation. -->
+    <string translatable="false" name="config_wifiSoftap6gChannelList"></string>
 
     <!-- Wifi driver supports Automatic channel selection (ACS) for softap -->
     <bool translatable="false" name="config_wifi_softap_acs_supported">true</bool>
+
+    <!-- Allow ACS to include DFS channels in 5GHz band for softap.
+         Enables channels 52-140 which are otherwise skipped. -->
+    <bool translatable="false" name="config_wifiSoftapAcsIncludeDfs">true</bool>
 
     <!-- Wifi driver supports WPA3 Simultaneous Authentication of Equals (WPA3-SAE) for softap -->
     <bool translatable="false" name="config_wifi_softap_sae_supported">true</bool>
@@ -58,8 +61,9 @@
     <!-- Wifi driver supports IEEE80211AX for softap -->
     <bool translatable="false" name="config_wifiSoftapIeee80211axSupported">true</bool>
 
-    <!-- Wifi driver supports 6GHz band for softap when chip support 6GHz -->
-    <bool translatable="false" name="config_wifiSoftap6ghzSupported">true</bool>
+    <!-- Wifi driver supports 6GHz band for softap when chip support 6GHz.
+         Disabled — 6GHz AP operation is not permitted under TR regulatory. -->
+    <bool translatable="false" name="config_wifiSoftap6ghzSupported">false</bool>
 
     <!-- Indicates that connected MAC randomization is supported on this device -->
     <bool translatable="false" name="config_wifi_connected_mac_randomization_supported">true</bool>
@@ -83,4 +87,8 @@
 
     <!-- Indicates whether the network-centric QoS policy feature is enabled. -->
     <bool translatable="false" name="config_wifiNetworkCentricQosPolicyFeatureEnabled">true</bool>
+
+    <!-- TWT (Target Wake Time) support — allows WiFi to schedule wake times,
+         reducing unnecessary CPU wakeups when connected -->
+    <bool translatable="false" name="config_wifiTwtSupported">true</bool>
 </resources>

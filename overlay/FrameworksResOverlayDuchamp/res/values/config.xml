@@ -22,14 +22,14 @@
     <!-- If this is true, the screen will come on when you unplug usb/power/whatever. -->
     <bool name="config_unplugTurnsOnScreen">true</bool>
 
-    <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx. -->
+    <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx.
+         Matches dumpsys display supportedColorModes: [0=NATIVE, 7=DISPLAY_P3, 9=SRGB]
+         Note: 257=standard, 258=vivid etc. are Xiaomi PQ modes handled by vendor PQ HAL,
+         not Android ColorDisplayManager modes. -->
     <integer-array name="config_availableColorModes">
-        <item>257</item> <!-- standard -->
-        <item>258</item> <!-- vivid -->
-        <item>256</item> <!-- saturated -->
-        <item>269</item> <!-- expert original -->
-        <item>268</item> <!-- expert P3 -->
-        <item>267</item> <!-- expert sRGB -->
+        <item>0</item>   <!-- NATIVE -->
+        <item>7</item>   <!-- DISPLAY_P3 -->
+        <item>9</item>   <!-- SRGB -->
     </integer-array>
 
     <!-- Indicate whether to allow the device to suspend when the screen is off
@@ -477,8 +477,15 @@
     <!-- Doze: should the TYPE_PICK_UP_GESTURE sensor be used as a pulse signal. -->
     <bool name="config_dozePulsePickup">true</bool>
 
-    <!-- Type of the udfps long press sensor. Empty if long press is not supported. -->
-    <string name="config_dozeUdfpsLongPressSensorType" translatable="false">org.lineageos.sensor.udfps</string>
+    <!-- Type of the udfps long press sensor. Empty if long press is not supported.
+         Xiaomi duchamp uses xiaomi.sensor.fod instead of org.lineageos.sensor.udfps -->
+    <string name="config_dozeUdfpsLongPressSensorType" translatable="false">xiaomi.sensor.fod</string>
+
+    <!-- UDFPS long press sensor timeout in milliseconds -->
+    <integer name="config_udfpsLongPressSensorTimeout">400</integer>
+
+    <!-- Whether the UDFPS illumination is controlled by the HAL (vendor) rather than the framework -->
+    <bool name="config_udfpsLongPressSensorUseHalControlledIllumination">true</bool>
 
     <!-- Control whether the always on display mode is available. This should only be enabled on
          devices where the display has been tuned to be power efficient in DOZE and/or DOZE_SUSPEND
@@ -487,7 +494,7 @@
 
     <!-- Control whether the always on display mode is enabled by default. This value will be used
          during initialization when the setting is still null. -->
-    <bool name="config_dozeAlwaysOnEnabled">false</bool>
+    <bool name="config_dozeAlwaysOnEnabled">true</bool>
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
          device from the display on/off state.
@@ -652,19 +659,11 @@
     <bool name="config_zramWriteback">true</bool>
 
     <!-- The default refresh rate for a given device. Change this value to set a higher default
-         refresh rate. If the hardware composer on the device supports display modes with a higher
-         refresh rate than the default value specified here, the framework may use those higher
-         refresh rate modes if an app chooses one by setting preferredDisplayModeId or calling
-         setFrameRate().
-         If a non-zero value is set for config_defaultPeakRefreshRate, then
-         config_defaultRefreshRate may be set to 0, in which case the value set for
-         config_defaultPeakRefreshRate will act as the default frame rate. -->
+         refresh rate. config_defaultRefreshRate=0 means use config_defaultPeakRefreshRate.
+         Panel supports 30/60/90/120Hz; peak is 120Hz (mDefaultModeId=3 from dumpsys). -->
     <integer name="config_defaultRefreshRate">0</integer>
 
-    <!-- The default peak refresh rate for a given device. Change this value if you want to prevent
-         the framework from using higher refresh rates, even if display modes with higher refresh
-         rates are available from hardware composer. Only has an effect if the value is
-         non-zero. -->
+    <!-- Peak refresh rate: 120Hz -->
     <integer name="config_defaultPeakRefreshRate">120</integer>
 
     <!-- Whether or not wcg (wide color gamut) should be enabled on this device,
@@ -683,4 +682,43 @@
     <!-- Default value for fp screen off unlock toggle, it only works for the devices that support
          fp screen off unlock-->
     <bool name="config_screen_off_udfps_default_on">true</bool>
+
+    <!-- Supported color modes. Must match DisplayDeviceInfo.supportedColorModes from dumpsys:
+         0 = COLOR_MODE_NATURAL (NATIVE)
+         7 = COLOR_MODE_DISPLAY_P3
+         9 = COLOR_MODE_SRGB
+         (Already defined above — kept here as reference, removed duplicate) -->
+
+    <!-- Default color mode: 0 = NATURAL/NATIVE (matches persist.sys.sf.native_mode=257) -->
+    <integer name="config_defaultColorMode">0</integer>
+
+    <!-- Wide Color Gamut (P3) support -->
+    <bool name="config_hasWideColorDisplay">true</bool>
+
+    <!-- HDR display support (types 1,2,3,4 = DV, HDR10, HLG, HDR10+) -->
+    <bool name="config_hasHDRDisplay">true</bool>
+
+    <!-- Adaptive refresh rate: panel supports 30/60/90/120Hz.
+         Peak is 120Hz (mDefaultModeId=3 from dumpsys display).
+         config_defaultRefreshRate=0 lets the framework use peak rate by default. -->
+
+    <!-- Minimum refresh rate while in low power / doze -->
+    <integer name="config_minimumRefreshRate">30</integer>
+
+    <!-- Touch boost: raise refresh rate on touch input -->
+    <bool name="config_supportTouchBoostRefreshRate">true</bool>
+
+    <!-- Rounded corners radii (from dumpsys: radius=106) -->
+    <integer name="rounded_corner_radius">106</integer>
+    <integer name="rounded_corner_radius_top">106</integer>
+    <integer name="rounded_corner_radius_bottom">106</integer>
+
+    <!-- DC dimming / SDR dimming: cihazda persist.sys.disable_sdr_dimming=true -->
+    <bool name="config_supportsDcDimming">false</bool>
+
+    <!-- 5G NR: standalone (SA) mode support -->
+    <bool name="config_telephony5gStandalone">true</bool>
+
+    <!-- 5G NR: non-standalone (NSA) mode support -->
+    <bool name="config_telephony5gNonStandalone">true</bool>
 </resources>

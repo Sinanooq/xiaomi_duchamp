@@ -3,8 +3,47 @@ on boot
     chmod 0666 /dev/xiaomi-fp
     chown system system /dev/xiaomi-fp
 
+    # goodix fingerprint
+    chmod 0666 /dev/goodix_fp
+    chown system system /dev/goodix_fp
+
+    # FOD display node
+    chown system system /sys/class/drm/card0-DSI-1/disp_param
+    chmod 0664 /sys/class/drm/card0-DSI-1/disp_param
+
+    # FOD dim layer / HBM nodes for screen-off UDFPS
+    chown system system /sys/class/drm/card0-DSI-1/fod_ui
+    chmod 0664 /sys/class/drm/card0-DSI-1/fod_ui
+    chown system system /sys/class/drm/card0-DSI-1/hbm
+    chmod 0664 /sys/class/drm/card0-DSI-1/hbm
+
+    # mfp-daemon spi nodes
+    chown system system /sys/bus/spi/devices/spi1.0/clk_enable
+    chmod 0660 /sys/bus/spi/devices/spi1.0/clk_enable
+    chown system system /sys/bus/spi/devices/spi1.0/wakeup_enable
+    chmod 0660 /sys/bus/spi/devices/spi1.0/wakeup_enable
+    chown system system /sys/bus/spi/devices/spi1.0/hw_reset
+    chmod 0660 /sys/bus/spi/devices/spi1.0/hw_reset
+    chown system system /sys/bus/spi/devices/spi1.0/irq
+    chmod 0660 /sys/bus/spi/devices/spi1.0/irq
+    chown system system /sys/bus/spi/devices/spi1.0/screen
+    chmod 0660 /sys/bus/spi/devices/spi1.0/screen
+    chown system system /sys/bus/spi/devices/spi1.0/power_ctrl
+    chmod 0660 /sys/bus/spi/devices/spi1.0/power_ctrl
+    chown system system /sys/bus/spi/devices/spi1.0/fingerdown_wait
+    chmod 0660 /sys/bus/spi/devices/spi1.0/fingerdown_wait
+    chown system system /sys/bus/spi/devices/spi5.0/authen_fd/performance
+    chmod 0660 /sys/bus/spi/devices/spi5.0/authen_fd/performance
+
 on post-fs-data
     mkdir /data/vendor/fpc 0770 system system
     mkdir /data/vendor/fpdump 0770 system system
+    mkdir /data/vendor/gf_data 0770 system system
+    mkdir /data/vendor/goodix 0770 system system
     mkdir /data/vendor/fingerprint 0770 system system
+    mkdir /data/vendor/misc 01771 system system
+    mkdir /data/vendor/misc/mi_fp 0770 system system
     mkdir /mnt/vendor/persist/fpc 0770 system system
+    mkdir /mnt/vendor/persist/goodix 0770 system system
+    mkdir /persist/mi_fp 0770 system system
+    mkdir /mnt/vendor/persist/mi_fp 0770 system system

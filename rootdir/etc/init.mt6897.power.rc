@@ -14,8 +14,13 @@ on charger
 on init
     write /sys/block/sda/queue/scheduler mq-deadline
 
-    # Set teo as cpu idle governor
-    write /sys/devices/system/cpu/cpuidle/current_governor teo
+    # Set sugov_ext as cpu frequency governor (MTK custom schedutil)
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor sugov_ext
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_governor sugov_ext
+    write /sys/devices/system/cpu/cpufreq/policy7/scaling_governor sugov_ext
+
+    # Set menu as cpu idle governor (confirmed from device)
+    write /sys/devices/system/cpu/cpuidle/current_governor menu
 
     # update cpus for cpuset cgroup
     write /dev/cpuset/background/cpus 0-3
@@ -29,8 +34,8 @@ on init
     # adjust PCP high level
     write /proc/sys/vm/percpu_pagelist_high_fraction 430
 
-    # disable proactive compaction
-    write /proc/sys/vm/compaction_proactiveness 0
+    # proactive compaction (confirmed from device: 20)
+    write /proc/sys/vm/compaction_proactiveness 20
 
     # Make foreground and background I/O priority different. none-to-rt was
     # introduced in kernel 5.14. promote-to-rt was introduced in kernel 6.5.
@@ -43,12 +48,12 @@ on post-fs-data
     # Disable watermark boost
     write /proc/sys/vm/watermark_boost_factor 0
 
-    # multi-gen LRU
-    write /sys/kernel/mm/lru_gen/enabled y
+    # multi-gen LRU (disabled on device: 0x0000)
+    write /sys/kernel/mm/lru_gen/enabled 0x0000
 
     # zram
     write /sys/block/zram0/comp_algorithm lz4
-    write /proc/sys/vm/page-cluster 0
+    write /proc/sys/vm/page-cluster 3
     write /proc/sys/vm/swappiness 100
     write /sys/kernel/mm/swap/vma_ra_enabled true
 
@@ -85,21 +90,30 @@ on property:sys.boot_completed=1
     setprop persist.sys.zram_enabled 1
     swapon_all /vendor/etc/fstab.mt6897
 
-    # Adjust watermark level
-    write /proc/sys/vm/watermark_scale_factor 200
+    # Adjust watermark level (confirmed from device: 50)
+    write /proc/sys/vm/watermark_scale_factor 50
 
-    write /proc/sys/kernel/sched_migration_cost_ns 200000
-
-    # restore boot perf. tune
+    # restore boot perf. tune — min frekansları sıfırla, max frekansları tam değere çek
     write /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq 0
     write /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq 0
     write /sys/devices/system/cpu/cpufreq/policy7/scaling_min_freq 0
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq 2200000
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq 3200000
+    write /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq 3350000
     write /sys/class/devfreq/mtk-dvfsrc-devfreq/userspace/set_freq 0
 
     # Utilization Clamping
     # Tuning
     write /proc/sys/kernel/sched_util_clamp_min_rt_default 0
-    write /proc/sys/kernel/sched_util_clamp_min 128
+    write /proc/sys/kernel/sched_util_clamp_min 1024
+
+    # sugov_ext rate limits (up/down = 1000us, confirmed from device)
+    write /sys/devices/system/cpu/cpufreq/policy0/sugov_ext/up_rate_limit_us 1000
+    write /sys/devices/system/cpu/cpufreq/policy0/sugov_ext/down_rate_limit_us 1000
+    write /sys/devices/system/cpu/cpufreq/policy4/sugov_ext/up_rate_limit_us 1000
+    write /sys/devices/system/cpu/cpufreq/policy4/sugov_ext/down_rate_limit_us 1000
+    write /sys/devices/system/cpu/cpufreq/policy7/sugov_ext/up_rate_limit_us 1000
+    write /sys/devices/system/cpu/cpufreq/policy7/sugov_ext/down_rate_limit_us 1000
 
     # rt
     write /dev/cpuctl/rt/cpu.uclamp.latency_sensitive 1
@@ -161,8 +175,65 @@ on property:sys.boot_completed=1
     # start cpuqos
     write /sys/devices/system/cpu/cpuqos/cpuqos_boot_complete 1
 
+    # core_ctl offline throttle (confirmed from device: 100ms)
+    write /sys/devices/system/cpu/cpu0/core_ctl/offline_throttle_ms 100
+    write /sys/devices/system/cpu/cpu4/core_ctl/offline_throttle_ms 100
+    write /sys/devices/system/cpu/cpu7/core_ctl/offline_throttle_ms 100
+
     # Enable PowerHAL hint processing
     setprop vendor.powerhal.init 1
+
+    # FPSGO — Frame Per Second GO (MTK FPS-based CPU/GPU boost system)
+    # Enable FPSGO (confirmed active on device)
+    write /sys/kernel/fpsgo/common/fpsgo_enable 1
+
+    # FPSGO FBT (Frame Budget Tracker) — ceiling enabled
+    write /sys/kernel/fpsgo/fbt/enable_ceiling 1
+
+    # FPSGO FBT — thermal throttle enable
+    write /sys/kernel/fpsgo/fbt/thrm_enable 1
+
+    # FPSGO FSTB (Frame Stability) — self-controlled fps
+    write /sys/kernel/fpsgo/fstb/fstb_self_ctrl_fps_enable 1
+
+    # FPSGO FSTB — fps list (30/60/90/120/144/240)
+    write /sys/kernel/fpsgo/fstb/fstb_fps_list "30 60 90 120 144 240"
+
+    # FPSGO FSTB — margin mode (0=fixed, 1=dynamic)
+    write /sys/kernel/fpsgo/fstb/margin_mode 1
+    write /sys/kernel/fpsgo/fstb/margin_mode_gpu 1
+
+    # FPSGO XGF — EMA2 enable
+    write /sys/kernel/fpsgo/xgf/xgf_ema2_enable 1
+
+    # GBE (Game Boost Engine) — enable
+    write /sys/kernel/gbe/gbe_enable1 1
+    write /sys/kernel/gbe/gbe_enable2 1
+
+    # Mali GPU power policy (coarse_demand = dynamic, not always_on)
+    write /sys/class/misc/mali0/device/power_policy coarse_demand
+
+    # GED (GPU DVFS) — confirmed from device
+    write /sys/kernel/ged/hal/dvfs_loading_mode 5
+    write /sys/kernel/ged/hal/loading_base_dvfs_step 4
+    write /sys/kernel/ged/hal/dvfs_margin_value 530
+    write /sys/kernel/ged/hal/timer_base_dvfs_margin 30
+    write /sys/kernel/ged/hal/loading_window_size 8
+    write /sys/kernel/ged/hal/loading_stride_size 2
+    write /sys/kernel/ged/hal/fallback_timing 210
+    write /sys/kernel/ged/hal/fallback_interval 1
+    write /sys/kernel/ged/hal/fallback_window_size 5
+    write /sys/kernel/ged/hal/dvfs_workload_mode 5
+    write /sys/kernel/ged/hal/fw_idle 1
+
+    # Touch boost — enable
+    write /proc/touch_boost/enable 1
+
+    # PPM (Power Policy Manager) — policy status
+    write /proc/ppm/policy_status "0 1"
+
+    # CCI mode
+    write /proc/cpufreq/cpufreq_cci_mode 0
 
 service vendor.hwcomposer-3-2 /vendor/bin/hw/android.hardware.graphics.composer@3.2-service
     override
