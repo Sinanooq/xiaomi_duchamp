@@ -290,7 +290,6 @@ ro.telephony.default_network=33,33,33,33
 ro.telephony.iwlan_operation_mode=AP-assisted
 ro.telephony.sim.count=2
 ro.vendor.md_prop_ver=1
-ro.vendor.mtk_c2k_lte_mode=2
 # C2K — duchamp desteklemiyor
 ro.vendor.mtk_c2k_support=0
 ro.vendor.mtk_c2k_lte_mode=0
