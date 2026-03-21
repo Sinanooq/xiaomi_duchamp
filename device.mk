@@ -327,6 +327,11 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/mediatek/wlan/wifi_hal \
     hardware/xiaomi
 
+# Charger
+PRODUCT_PACKAGES += \
+    charger_res_images \
+    product_charger_res_images
+
 # Thermal
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.pixel \
