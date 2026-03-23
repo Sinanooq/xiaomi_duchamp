@@ -414,6 +414,12 @@ ro.vendor.wlan.chrdev=wmt_chrdev_wifi_connac2
 ro.vendor.wlan.gen=gen4m_6897
 # Hotspot DFS kanalları (5GHz band 52-140)
 wifi.softap.acs_include_dfs=true
+# Eski router uyumluluğu — WPA/WPA2 mixed mode, TKIP group cipher
+# ve PMF olmayan ağlara bağlanabilmek için
+wifi.interface=wlan0
+# 802.11r (Fast BSS Transition) devre dışı — bazı eski router'larla
+# roaming sırasında bağlantı kopmasına neden oluyor
+wifi.supplicant_scan_interval=15
 
 # Charger — kapalıyken şarj modunda kal, boot etme
 ro.enable_boot_charger_mode=1
