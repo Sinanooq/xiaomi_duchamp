@@ -54,7 +54,7 @@
     <bool name="config_doze_show_clock">false</bool>
     <bool name="config_doze_show_date">false</bool>
     <bool name="config_doze_show_notifications">false</bool>
-    <bool name="config_doze_show_charging_animation">false</bool>
+    <bool name="config_doze_show_charging_animation">true</bool>
     <bool name="config_show_udfps_affordance_on_aod">true</bool>
 
     <!-- Doze pulse: 10 saniye göster, sonra ekran tamamen sönsün -->

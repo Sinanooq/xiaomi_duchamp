@@ -4,6 +4,9 @@
 /dev/elliptic[0-1]                                                                                     u:object_r:sensors_device:s0
 /dev/xlog                                                                                              u:object_r:sound_device:s0
 
+# IMS
+/system/priv-app/ImsService(/.*)?                                                                      u:object_r:priv_app_file:s0
+
 # Batterysecret
 /(vendor|system/vendor)/bin/batterysecret                                                              u:object_r:vendor_batterysecret_exec:s0
 

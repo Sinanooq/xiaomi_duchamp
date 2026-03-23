@@ -266,13 +266,14 @@ ro.vendor.vodata_support=1
 ro.vendor.vt_hevc_support=1
 
 # LMK tuning
-ro.lmk.filecache_min_kb=153600
+ro.lmk.filecache_min_kb=102400
 ro.lmk.kill_timeout_ms=100
 ro.lmk.thrashing_limit=30
-ro.lmk.thrashing_limit_decay=2
+# thrashing_limit_decay=5 — 2 çok agresif, bellek baskısında çok hızlı kill ediyor
+ro.lmk.thrashing_limit_decay=5
 ro.lmk.psi_partial_stall_ms=70
 ro.lmk.psi_complete_stall_ms=100
-ro.lmk.swap_free_low_percentage=20
+ro.lmk.swap_free_low_percentage=10
 ro.lmk.swap_util_max=100
 ro.lmk.kill_heaviest_task=true
 ro.lmk.stall_limit_critical=40
@@ -286,6 +287,8 @@ ro.vendor.mtk.c2.vdec.fmt.support.level=2
 ro.vendor.mtk.c2.vdec.vpp.turnkey.memc=1
 ro.vendor.mtk_sec_video_path_support=1
 vendor.mtk.vdec.waitkeyframeforplay=9
+# Video decoder thread count — MT6897 8 core, 4 thread optimal
+media.stagefright.thumbnail.prefer_hw_codecs=true
 
 # Neural Networks
 debug.mtk_tflite.target_nnapi=29
@@ -372,11 +375,12 @@ debug.sf.enable_gl_backpressure=0
 debug.sf.enable_hwc_vds=0
 debug.sf.frame_rate_multiple_threshold=120
 debug.sf.predict_hwc_composition_strategy=0
-debug.sf.set_idle_timer_ms=1100
 debug.sf.treat_170m_as_sRGB=1
 debug.sf.use_phase_offsets_as_durations=1
 debug.sf.disable_backpressure=1
 debug.sf.set_binder_thread_rt=1
+# auto_latch_unsignaled=2: fence beklemeden frame'i latch et — jank azaltır
+debug.sf.auto_latch_unsignaled=2
 ro.surface_flinger.enable_frame_rate_override=true
 ro.surface_flinger.force_hwc_copy_for_virtual_displays=true
 ro.surface_flinger.game_default_frame_rate_override=0
@@ -387,9 +391,9 @@ ro.surface_flinger.max_frame_buffer_acquired_buffers=4
 ro.surface_flinger.primary_display_orientation=ORIENTATION_0
 ro.surface_flinger.protected_contents=true
 ro.surface_flinger.set_idle_timer_ms=1100
-ro.surface_flinger.set_touch_timer_ms=1100
+ro.surface_flinger.set_touch_timer_ms=200
 ro.surface_flinger.supports_background_blur=1
-ro.surface_flinger.uclamp.min=120
+ro.surface_flinger.uclamp.min=0
 
 # Touch
 ro.vendor.touchfeature.type=243
@@ -424,12 +428,20 @@ ro.zram.periodic_wb_delay_hours=24
 # Zygote
 zygote.critical_window.minute=10
 
-# CPU schedutil governor tuning — yük yokken hızlı düş, yük gelince hızlı çık
-# rate_limit_us: frekans değişim hızı (µs), düşük = daha agresif scaling
-vendor.schedutil.rate_limit_us=500
-# uclamp: schedutil'in CPU kapasitesini doğru kullanması için
+# CPU schedutil governor tuning
+# sugov_ext rate limit'leri init.mt6897.power.rc'de sys.boot_completed=1 sonrası ayarlanıyor
 # top-app grubuna min uclamp 0 — idle'da gereksiz boost yok
 sys.use_fifo_ui=0
 
 # CPU idle — derin uyku için daha agresif geçiş
 pm.sleep_mode=1
+
+# Render thread boost — top-app render thread'ini büyük core'lara taşı
+persist.sys.perf.topAppRenderThreadBoost.enable=true
+
+# VM dirty ratio — bellek baskısını azalt, yazma gecikmesini dengele
+vm.dirty_ratio=8
+vm.dirty_background_ratio=4
+# dirty_expire: 3000cs (30sn) — çok kısa değer (200cs=2sn) gereksiz flush'a neden olur
+vm.dirty_expire_centisecs=3000
+vm.dirty_writeback_centisecs=500

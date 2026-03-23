@@ -263,6 +263,18 @@
             "Type":"GPU"
         },
         {
+            "Name":"cpu-throttle-0",
+            "Type":"CPU"
+        },
+        {
+            "Name":"cpu-throttle-4",
+            "Type":"CPU"
+        },
+        {
+            "Name":"cpu-throttle-7",
+            "Type":"CPU"
+        },
+        {
             "Name":"charger-cooler",
             "Type":"BATTERY"
         }

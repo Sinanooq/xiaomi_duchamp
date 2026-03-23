@@ -43,6 +43,9 @@ on property:vendor.audio.cit.spkcal.copy=true
 on property:sys.spatial.headtrack=*
     setprop vendor.spatial.headtrack ${sys.spatial.headtrack}
 
+on property:vendor.spatial.headtrack=*
+    setprop sys.spatial.headtrack ${vendor.spatial.headtrack}
+
 on boot
     # Display feature sysfs node
     chown system system /sys/class/mi_display/disp-DSI-0/disp_param

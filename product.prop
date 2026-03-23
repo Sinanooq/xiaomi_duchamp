@@ -30,5 +30,22 @@ remote_provisioning.hostname=remoteprovisioning.googleapis.com
 # MTE
 ro.arm64.memtag.bootctl_supported=1
 
+# Dalvik heap optimizasyonu — uygulama açılış süresi ve GC baskısı azaltır
+dalvik.vm.heapstartsize=16m
+dalvik.vm.heapgrowthlimit=256m
+dalvik.vm.heapsize=512m
+# heaptargetutilization=0.6 — 0.5 çok agresif GC tetikler, 0.6 daha dengeli
+dalvik.vm.heaptargetutilization=0.6
+dalvik.vm.heapminfree=8m
+dalvik.vm.heapmaxfree=32m
+
 # ZRAM writeback
 ro.zram_backing_device_min_free_mb=1536
+
+# Uygulama başlatma optimizasyonu
+# preloaded_classes: JIT profil tabanlı AOT derleme
+dalvik.vm.usejit=true
+dalvik.vm.usejitprofiles=true
+# dex2oat thread count: 4 thread — derleme süresi azalır
+dalvik.vm.dex2oat-threads=4
+dalvik.vm.dex2oat-cpu-set=0,1,2,3
