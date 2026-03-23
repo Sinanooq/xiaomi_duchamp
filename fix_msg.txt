@@ -1,0 +1,6 @@
+FrameworksResOverlay: config.xml duplicate ve bozuk XML düzeltildi
+
+- config_telephony5gStandalone ve config_telephony5gNonStandalone
+  iki kez tanımlanmıştı, ikinci tanımlar kaldırıldı
+- config_screenBrightnessNits ve config_screenBrightnessBacklight
+  array'leri kapanış </resources> etiketinin dışında kalmıştı, düzeltildi
