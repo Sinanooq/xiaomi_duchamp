@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spatial audio dB reduction disabled (original: 5dB) -->
+<table>
+    <AudioSpatialDbReduce>0</AudioSpatialDbReduce>
+</table>

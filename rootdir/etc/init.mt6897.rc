@@ -43,6 +43,11 @@ on charger
 
     chown system system /sys/class/leds/lcd-backlight/brightness
 
+    # Charger: suspend'i devre dışı bırak — güç tuşuna her basışta ekran açılsın
+    setprop ro.charger.enable_suspend false
+    # Charger animasyonunu her güç tuşu basışında yeniden göster
+    setprop sys.charger.disable_init_blank true
+
     start vendor.light-default
     start charger
 
@@ -75,6 +80,23 @@ on post-fs-data
     chown system system /mnt/vendor/nvcfg/fg
     chown system system /mnt/vendor/nvcfg/fg/old_fg_data
     chown system system /mnt/vendor/nvcfg/fg/car_tune_value
+
+    # BatteryStats / UsageStats: uygulama başına CPU ve I/O kullanım takibi
+    # /proc/uid_io/stats: uygulama başına disk I/O (Settings > Battery > App usage)
+    chown root system /proc/uid_io/stats
+    chmod 0664 /proc/uid_io/stats
+    # /proc/uid_time_in_state: uygulama başına CPU frekans süresi (güç tüketimi hesabı)
+    chown root system /proc/uid_time_in_state
+    chmod 0664 /proc/uid_time_in_state
+    # /proc/uid_concurrent_active_time: eş zamanlı aktif CPU süresi
+    chown root system /proc/uid_concurrent_active_time
+    chmod 0664 /proc/uid_concurrent_active_time
+    # /proc/uid_concurrent_policy_time: cluster başına eş zamanlı CPU süresi
+    chown root system /proc/uid_concurrent_policy_time
+    chmod 0664 /proc/uid_concurrent_policy_time
+    # /proc/uid_cpupower: uygulama başına CPU güç tüketimi (Android 12+)
+    chown root system /proc/uid_cpupower
+    chmod 0664 /proc/uid_cpupower
 
     # create basic filesystem structure
     # We chown/chmod /mnt/vendor/nvdata again so because mount is run as root + defaults

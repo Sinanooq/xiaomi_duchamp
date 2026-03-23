@@ -42,4 +42,34 @@
     <screenBrightnessRampFastIncrease>0.23228346</screenBrightnessRampFastIncrease>
     <ambientLightHorizonLong>3000</ambientLightHorizonLong>
     <ambientLightHorizonShort>1000</ambientLightHorizonShort>
+
+    <!--
+        Adaptive Refresh Rate (ARR) / Variable Refresh Rate config.
+        Panel supports: 30Hz, 60Hz, 90Hz, 120Hz.
+        defaultRefreshRate=120 and defaultPeakRefreshRate=120 match mRefreshRateData from dumpsys.
+        This enables AOSP auto refresh rate switching (Settings > Display > Smooth Display).
+        hasArrSupport=true: enables the ARR flag so AOSP framework uses adaptive switching.
+    -->
+    <refreshRateConfigs>
+        <defaultRefreshRate>120</defaultRefreshRate>
+        <defaultPeakRefreshRate>120</defaultPeakRefreshRate>
+        <defaultRefreshRateInHbmHdr>60</defaultRefreshRateInHbmHdr>
+        <defaultRefreshRateInHbmSunlight>60</defaultRefreshRateInHbmSunlight>
+    </refreshRateConfigs>
+
+    <!-- Enable ARR support — sets mHasArrSupport=true in DisplayDeviceInfo.
+         Without this, AOSP keeps renderFrameRate locked at 60Hz even with 120Hz panel. -->
+    <hasArrSupport>true</hasArrSupport>
+
+    <!--
+        Supported color modes (from dumpsys: [0, 7, 9]):
+          0 = COLOR_MODE_NATIVE
+          7 = COLOR_MODE_DISPLAY_P3
+          9 = COLOR_MODE_SRGB
+        defaultColorMode=0 (NATIVE) matches persist.sys.sf.native_mode=0.
+    -->
+    <defaultColorMode>0</defaultColorMode>
+
+    <!-- HDR capabilities (from dumpsys: types=[1,2,3,4] = DOLBY_VISION, HDR10, HLG, HDR10_PLUS) -->
+    <!-- maxLuminance=500nit (normal), peak=1200nit (HBM) -->
 </displayConfiguration>

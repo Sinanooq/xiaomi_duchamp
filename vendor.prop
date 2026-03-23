@@ -8,9 +8,12 @@ persist.vendor.audio.power.save.setting=253
 persist.vendor.audio.usb.offload=false
 ro.audio.monitorRotation=true
 ro.audio.spatializer_enabled=true
+# Medya ses adımı: 25 (default 15) — daha hassas kontrol
+ro.config.media_vol_steps=25
 ro.config.media_vol_default=10
-ro.config.vc_call_vol_default=4
-ro.config.vc_call_vol_steps=11
+# Telefon ses adımı: 15 (default 11) — daha geniş aralık
+ro.config.vc_call_vol_steps=15
+ro.config.vc_call_vol_default=6
 ro.vendor.audio.gain.support=true
 vendor.audio.gamevoice=1
 vendor.audio.powerhal.power.dl=true
@@ -24,6 +27,7 @@ vendor.audiohal.telephonytx.type=2
 persist.bluetooth.a2dp_offload.coex_buf_count=3
 persist.bluetooth.a2dp_offload.disabled=false
 persist.bluetooth.a2dp_offload.mtk_coex=true
+persist.bluetooth.a2dp_offload.cap=sbc-aac-ldac-aptx-aptxhd
 ro.bluetooth.a2dp_offload.supported=true
 ro.vendor.bt.connac3=no
 ro.vendor.bt.platform=6897
@@ -56,6 +60,10 @@ vendor.mtk.camera.app.fd.video=1
 
 # Charging
 persist.vendor.accelerate.charge=true
+ro.vendor.mtk_fast_charging_support=1
+persist.vendor.battery.health=true
+persist.vendor.battery.health.optimise=true
+persist.vendor.night.charge=true
 
 # Chipset
 ro.soc.manufacturer=Mediatek
@@ -80,7 +88,8 @@ dalvik.vm.dex2oat64.enabled=true
 # Display
 debug.graphics.game_default_frame_rate.disabled=true
 debug.mediatek.appgamepq_compress=1
-persist.sys.sf.native_mode=257
+# 257 = Xiaomi vivid PQ modu, Android renk modlarını (Natural/P3/sRGB) bypass eder
+persist.sys.sf.native_mode=0
 persist.vendor.sys.pq.disp.gamma.silky.brightness=1
 persist.vendor.sys.pq.disp_gamma_silky_brightness_by_hwc=1
 persist.vendor.sys.pq.mtk_disp_clarity_support=0
@@ -94,6 +103,8 @@ ro.vendor.mml.mtk_mml_support=1
 ro.vendor.mtk.gpud.mm.fbc.disable=false
 ro.vendor.mtk_aal_support=1
 ro.vendor.mtk_aod_support=1
+# AOD monitor FPS: 30 çok düşük, UDFPS touch event'lerini kaçırıyor
+ro.vendor.display.aod_monitor_default_fps=60
 ro.vendor.mtk_backlight_hwc_support=1
 ro.vendor.mtk_blulight_def_support=1
 ro.vendor.mtk_cuva_hdr_support=1
@@ -101,7 +112,8 @@ ro.vendor.mtk_dre30_support=1
 ro.vendor.mtk_hdr10p_adaptive_support=1
 ro.vendor.mtk_hdr_video_support=1
 ro.vendor.mtk_ovl_bringup=0
-ro.vendor.mtk_pq_color_mode=3
+# 3 = Xiaomi ColorService kendi ppMode mapping'ini kullanır, Android renk modlarını override eder
+ro.vendor.mtk_pq_color_mode=0
 ro.vendor.mtk_pq_support=2
 ro.vendor.mtk_svp_on_mtee_support=1
 ro.vendor.pq.mtk_aal_support=1
@@ -218,6 +230,9 @@ ro.hardware.fp.mievent=true
 # FOD dim layer / HBM for screen-off UDFPS
 persist.vendor.sys.fp.fod.dimlayer.hbm=1
 persist.vendor.sys.fp.fod.dimlayer.fp=1
+# Screen-off / AOD UDFPS aktif
+persist.vendor.sys.fp.fod.aod.enable=1
+persist.vendor.sys.fp.fod.screen_off.enable=1
 
 # FUSE passthrough
 persist.sys.fuse.passthrough.enable=true
@@ -225,15 +240,21 @@ persist.sys.fuse.passthrough.enable=true
 # GNSS
 ro.vendor.mtk_log_hide_gps=1
 ro.vendor.gps.chrdev=gps_drv_dl_v051
+persist.sys.gps.lpp=3
 
 # IMS
+persist.dbg.volte_avail_ovr=1
+persist.dbg.vt_avail_ovr=1
+persist.dbg.wfc_avail_ovr=1
+persist.vendor.ims_support=1
 persist.vendor.mtk.volte.enable=1
 persist.vendor.mtk_ct_volte_support=3
 persist.vendor.mtk_dynamic_ims_switch=1
 persist.vendor.mtk_wfc_support=1
+persist.vendor.vilte_support=1
 persist.vendor.viwifi_support=1
+persist.vendor.volte_support=1
 persist.vendor.vonr_setting_support=1
-# VoNR/ViNR enable (mt6897-devs'te kapalıydı)
 persist.vendor.mtk.vonr.enable=1
 persist.vendor.mtk.vinr.enable=1
 ro.vendor.md_auto_setup_ims=1
@@ -245,7 +266,14 @@ ro.vendor.vt_hevc_support=1
 
 # LMK tuning
 ro.lmk.filecache_min_kb=153600
-ro.lmk.kill_timeout_ms=50
+ro.lmk.kill_timeout_ms=100
+ro.lmk.thrashing_limit=30
+ro.lmk.thrashing_limit_decay=2
+ro.lmk.psi_partial_stall_ms=70
+ro.lmk.psi_complete_stall_ms=100
+ro.lmk.swap_free_low_percentage=20
+ro.lmk.swap_util_max=100
+ro.lmk.kill_heaviest_task=true
 ro.lmk.stall_limit_critical=40
 
 # Media
@@ -314,6 +342,7 @@ ro.vendor.mtk_world_phone_policy=0
 ro.vendor.num_md_protocol=2
 ro.vendor.radio.max.multisim=dsds
 ro.vendor.sim_me_lock_mode=3
+ro.vendor.radio.5g=3
 telephony.active_modems.max_count=2
 telephony.lteOnCdmaDevice=1
 import /vendor/etc/rsc/${ro.boot.rsc}.prop
@@ -345,9 +374,11 @@ debug.sf.predict_hwc_composition_strategy=0
 debug.sf.set_idle_timer_ms=1100
 debug.sf.treat_170m_as_sRGB=1
 debug.sf.use_phase_offsets_as_durations=1
-ro.surface_flinger.enable_frame_rate_override=false
+debug.sf.disable_backpressure=1
+debug.sf.set_binder_thread_rt=1
+ro.surface_flinger.enable_frame_rate_override=true
 ro.surface_flinger.force_hwc_copy_for_virtual_displays=true
-ro.surface_flinger.game_default_frame_rate_override=60
+ro.surface_flinger.game_default_frame_rate_override=0
 ro.surface_flinger.has_HDR_display=true
 ro.surface_flinger.has_wide_color_display=true
 ro.surface_flinger.ignore_hdr_camera_layers=true
@@ -355,8 +386,13 @@ ro.surface_flinger.max_frame_buffer_acquired_buffers=4
 ro.surface_flinger.primary_display_orientation=ORIENTATION_0
 ro.surface_flinger.protected_contents=true
 ro.surface_flinger.set_idle_timer_ms=1100
+ro.surface_flinger.set_touch_timer_ms=1100
 ro.surface_flinger.supports_background_blur=1
 ro.surface_flinger.uclamp.min=120
+
+# Touch
+ro.vendor.touchfeature.type=243
+persist.vendor.touchfeature.gameturbotool.version=v3
 
 # Trusted Execution Environment (TEE)
 ro.vendor.mtk_microtrust_tee_support=1
@@ -376,6 +412,8 @@ wifi.softap.acs_include_dfs=true
 
 # Charger — kapalıyken şarj modunda kal, boot etme
 ro.enable_boot_charger_mode=1
+# Charger suspend'i kapat: güç tuşuna her basışta ekran açılsın ve animasyon gösterilsin
+ro.charger.enable_suspend=false
 
 # ZRAM writeback
 ro.zram.mark_idle_delay_mins=60
@@ -384,3 +422,13 @@ ro.zram.periodic_wb_delay_hours=24
 
 # Zygote
 zygote.critical_window.minute=10
+
+# CPU schedutil governor tuning — yük yokken hızlı düş, yük gelince hızlı çık
+# rate_limit_us: frekans değişim hızı (µs), düşük = daha agresif scaling
+vendor.schedutil.rate_limit_us=500
+# uclamp: schedutil'in CPU kapasitesini doğru kullanması için
+# top-app grubuna min uclamp 0 — idle'da gereksiz boost yok
+sys.use_fifo_ui=0
+
+# CPU idle — derin uyku için daha agresif geçiş
+pm.sleep_mode=1

@@ -492,9 +492,9 @@
          states. -->
     <bool name="config_dozeAlwaysOnDisplayAvailable">true</bool>
 
-    <!-- Control whether the always on display mode is enabled by default. This value will be used
-         during initialization when the setting is still null. -->
-    <bool name="config_dozeAlwaysOnEnabled">true</bool>
+    <!-- Control whether the always on display mode is enabled by default.
+         false: pulse modeli — ekran 10sn AOD gösterir sonra tamamen söner. -->
+    <bool name="config_dozeAlwaysOnEnabled">false</bool>
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
          device from the display on/off state.
@@ -658,10 +658,10 @@
     <!-- Enable Zram writeback feature to allow unused pages in zram be written to flash. -->
     <bool name="config_zramWriteback">true</bool>
 
-    <!-- The default refresh rate for a given device. Change this value to set a higher default
-         refresh rate. config_defaultRefreshRate=0 means use config_defaultPeakRefreshRate.
-         Panel supports 30/60/90/120Hz; peak is 120Hz (mDefaultModeId=3 from dumpsys). -->
-    <integer name="config_defaultRefreshRate">0</integer>
+    <!-- The default refresh rate for a given device.
+         Panel supports 30/60/90/120Hz; peak is 120Hz.
+         120 olarak sabitlendi — 0 değeri MTK'da 60Hz'e fallback yapıyor. -->
+    <integer name="config_defaultRefreshRate">120</integer>
 
     <!-- Peak refresh rate: 120Hz -->
     <integer name="config_defaultPeakRefreshRate">120</integer>
@@ -698,10 +698,6 @@
     <!-- HDR display support (types 1,2,3,4 = DV, HDR10, HLG, HDR10+) -->
     <bool name="config_hasHDRDisplay">true</bool>
 
-    <!-- Adaptive refresh rate: panel supports 30/60/90/120Hz.
-         Peak is 120Hz (mDefaultModeId=3 from dumpsys display).
-         config_defaultRefreshRate=0 lets the framework use peak rate by default. -->
-
     <!-- Minimum refresh rate while in low power / doze -->
     <integer name="config_minimumRefreshRate">30</integer>
 
@@ -721,4 +717,94 @@
 
     <!-- 5G NR: non-standalone (NSA) mode support -->
     <bool name="config_telephony5gNonStandalone">true</bool>
+
+    <!-- Audio volume steps.
+         ro.config.media_vol_steps=25 ile eşleşmeli.
+         Default: media=15, ring=7, alarm=7, voice=5 -->
+    <integer name="config_audio_ring_vol_steps">7</integer>
+    <integer name="config_audio_notif_vol_steps">7</integer>
+    <integer name="config_audio_alarm_vol_steps">7</integer>
+    <integer name="config_audio_media_vol_steps">25</integer>
+    <integer name="config_audio_voice_vol_steps">15</integer>
+
+    <!-- Safe media volume: EU safe volume uyarısını devre dışı bırak.
+         true = 100dB uyarısı gösterilmez, kullanıcı tam ses kullanabilir. -->
+    <bool name="config_safe_media_volume_enabled">false</bool>
+</resources>
+
+    <!-- Screen brightness in nits corresponding to each backlight value (0-255).
+         Used by BatteryStats to calculate screen power consumption accurately.
+         Derived from screenBrightnessMap: 0.000854597→2nit, 0.499938→500nit, 1.0→1200nit.
+         config_autoBrightnessDisplayValuesNits uses this for auto-brightness power accounting.
+         Must have same number of entries as config_screenBrightnessBacklight. -->
+    <array name="config_screenBrightnessNits">
+        <item>2.0</item>
+        <item>5.0</item>
+        <item>10.0</item>
+        <item>20.0</item>
+        <item>30.0</item>
+        <item>40.0</item>
+        <item>50.0</item>
+        <item>60.0</item>
+        <item>70.0</item>
+        <item>80.0</item>
+        <item>90.0</item>
+        <item>100.0</item>
+        <item>120.0</item>
+        <item>140.0</item>
+        <item>160.0</item>
+        <item>180.0</item>
+        <item>200.0</item>
+        <item>230.0</item>
+        <item>260.0</item>
+        <item>300.0</item>
+        <item>350.0</item>
+        <item>400.0</item>
+        <item>450.0</item>
+        <item>500.0</item>
+        <item>600.0</item>
+        <item>700.0</item>
+        <item>800.0</item>
+        <item>900.0</item>
+        <item>1000.0</item>
+        <item>1100.0</item>
+        <item>1200.0</item>
+    </array>
+
+    <!-- Backlight values (0-255) corresponding to each nit value above.
+         Derived from screenBrightnessMap (float→nit) scaled to 0-255.
+         BatteryStats uses this to map current backlight level to nits → power draw. -->
+    <array name="config_screenBrightnessBacklight">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>12</item>
+        <item>16</item>
+        <item>20</item>
+        <item>24</item>
+        <item>28</item>
+        <item>32</item>
+        <item>36</item>
+        <item>40</item>
+        <item>48</item>
+        <item>56</item>
+        <item>64</item>
+        <item>72</item>
+        <item>80</item>
+        <item>92</item>
+        <item>104</item>
+        <item>120</item>
+        <item>140</item>
+        <item>160</item>
+        <item>180</item>
+        <item>200</item>
+        <item>214</item>
+        <item>222</item>
+        <item>230</item>
+        <item>238</item>
+        <item>244</item>
+        <item>250</item>
+        <item>255</item>
+    </array>
 </resources>

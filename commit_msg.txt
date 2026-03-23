@@ -1,0 +1,59 @@
+duchamp: kapsamlı düzeltmeler ve iyileştirmeler
+
+Renk modları:
+- persist.sys.sf.native_mode ve ro.vendor.mtk_pq_color_mode düzeltildi
+- vendor.displayfeature.entry.enable devre dışı bırakıldı
+- ColorService: fromId() fonksiyonuna androidToXiaomiMap eklendi
+
+Yenileme hızı:
+- config_defaultRefreshRate/PeakRefreshRate 120Hz olarak ayarlandı
+- Keyguard yenileme hızı 60'tan 120'ye çıkarıldı
+- ro.surface_flinger.game_default_frame_rate_override=0 eklendi
+
+AOD ve parmak izi:
+- FOD AOD prop'ları eklendi (fod.aod.enable, screen_off.enable)
+- AOD'da saat/bildirim gizlendi, sadece UDFPS animasyonu
+- config_show_udfps_affordance_on_aod=true eklendi
+- AOD timeout 10 saniye olarak ayarlandı
+
+Güç yönetimi:
+- thermal_info_config.json skin temp eşikleri optimize edildi
+- powerhint.json optimize edildi
+- schedutil rate_limit ve pm.sleep_mode eklendi
+- init.mt6897.power.rc: cpuidle ve mcdi desteği eklendi
+
+Şarj:
+- on charger bloğuna suspend ve init_blank prop'ları eklendi
+- ro.charger.enable_suspend ve ro.enable_boot_charger_mode eklendi
+
+Ağ ve izinler:
+- GNSS HAL AIDL v3 manifest.xml'e eklendi
+- android.hardware.telephony.data.xml ve location.xml eklendi
+- android.hardware.nfc.any.xml eklendi (Google Wallet)
+- WiFi config dosyaları oluşturuldu
+- TelephonyResOverlayDuchamp overlay'i eklendi
+- MediaTek permission XML'leri eklendi
+
+Ses:
+- audio_policy_volumes.xml: speaker +6dB boost
+- default_volume_tables.xml oluşturuldu
+- audio_spatial_db_reduce.xml oluşturuldu
+- Ses adımı prop'ları eklendi (medya: 25, telefon: 15)
+
+Batarya istatistikleri:
+- Ekran parlaklık array'leri eklendi
+- uid_io/uid_time_in_state için chown/chmod eklendi
+- power_profile.xml eski format array'leri temizlendi
+
+Ekran:
+- display_id XML'e refreshRateConfigs ve hasArrSupport eklendi
+
+SELinux:
+- hal_lineage_health_default.te oluşturuldu
+- property.te: vendor_thermal_prop tipi eklendi
+- vendor_init.te: vendor_thermal_prop set_prop eklendi
+
+Google servisleri:
+- bluetooth.profile.sap.server.enabled false yapıldı
+- android.hardware.opengles.aep.xml eklendi
+- RC dosyaları senkronize edildi (wlan_drv, mtkpower, wlan_assistant)

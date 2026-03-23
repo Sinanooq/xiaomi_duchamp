@@ -2,6 +2,7 @@ set_prop(vendor_init, vendor_sensors_prop)
 set_prop(vendor_init, vendor_batterysecret_prop)
 set_prop(vendor_init, vendor_displayfeature_prop)
 set_prop(vendor_init, vendor_fingerprint_prop)
+set_prop(vendor_init, vendor_thermal_prop)
 
 # MM
 allow vendor_init proc_percpu_pagelist_high_fraction:file w_file_perms;

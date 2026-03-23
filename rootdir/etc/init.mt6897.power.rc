@@ -235,6 +235,12 @@ on property:sys.boot_completed=1
     # CCI mode
     write /proc/cpufreq/cpufreq_cci_mode 0
 
+    # Deep sleep — cpuidle ve MCDI (Multi-Core Deep Idle) aktif
+    # menu governor zaten ayarlı, burada cpuidle enable edildiğinden emin oluyoruz
+    write /proc/cpuidle/enable 1
+    # MCDI state 1 = deep idle aktif (0 = disabled, 1 = enabled)
+    write /proc/mcdi/state 1
+
 service vendor.hwcomposer-3-2 /vendor/bin/hw/android.hardware.graphics.composer@3.2-service
     override
     class hal animation
