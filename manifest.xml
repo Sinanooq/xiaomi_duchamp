@@ -84,11 +84,6 @@
         <fqname>ISecureElement/eSE1</fqname>
     </hal>
     <hal format="aidl">
-        <name>android.hardware.gnss</name>
-        <version>3</version>
-        <fqname>IGnss/default</fqname>
-    </hal>
-    <hal format="aidl">
         <name>android.hardware.soundtrigger3</name>
         <fqname>ISoundTriggerHw/default</fqname>
     </hal>
