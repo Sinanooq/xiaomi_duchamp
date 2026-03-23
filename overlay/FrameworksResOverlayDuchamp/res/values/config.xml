@@ -712,12 +712,6 @@
     <!-- DC dimming / SDR dimming: cihazda persist.sys.disable_sdr_dimming=true -->
     <bool name="config_supportsDcDimming">false</bool>
 
-    <!-- 5G NR: standalone (SA) mode support -->
-    <bool name="config_telephony5gStandalone">true</bool>
-
-    <!-- 5G NR: non-standalone (NSA) mode support -->
-    <bool name="config_telephony5gNonStandalone">true</bool>
-
     <!-- Audio volume steps.
          ro.config.media_vol_steps=25 ile eşleşmeli.
          Default: media=15, ring=7, alarm=7, voice=5 -->
@@ -730,7 +724,6 @@
     <!-- Safe media volume: EU safe volume uyarısını devre dışı bırak.
          true = 100dB uyarısı gösterilmez, kullanıcı tam ses kullanabilir. -->
     <bool name="config_safe_media_volume_enabled">false</bool>
-</resources>
 
     <!-- Screen brightness in nits corresponding to each backlight value (0-255).
          Used by BatteryStats to calculate screen power consumption accurately.
