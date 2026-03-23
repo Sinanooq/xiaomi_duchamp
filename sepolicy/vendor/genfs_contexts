@@ -15,6 +15,8 @@ genfscon sysfs /devices/platform/soc/11e10000.dp-tx/extcon/dp_audio/cable.0/name
 
 # Fingerprint
 genfscon sysfs /devices/virtual/touch/touch_dev/fod_press_status u:object_r:vendor_fingerprint_sysfs:s0
+genfscon sysfs /devices/virtual/drm/card0/card0-DSI-1/fod_ui     u:object_r:vendor_fingerprint_sysfs:s0
+genfscon sysfs /devices/virtual/drm/card0/card0-DSI-1/hbm        u:object_r:vendor_fingerprint_sysfs:s0
 
 # MM
 genfscon proc /sys/vm/compaction_proactiveness u:object_r:proc_compaction_proactiveness:s0

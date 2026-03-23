@@ -482,7 +482,7 @@
     <string name="config_dozeUdfpsLongPressSensorType" translatable="false">xiaomi.sensor.fod</string>
 
     <!-- UDFPS long press sensor timeout in milliseconds -->
-    <integer name="config_udfpsLongPressSensorTimeout">400</integer>
+    <integer name="config_udfpsLongPressSensorTimeout">200</integer>
 
     <!-- Whether the UDFPS illumination is controlled by the HAL (vendor) rather than the framework -->
     <bool name="config_udfpsLongPressSensorUseHalControlledIllumination">true</bool>

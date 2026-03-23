@@ -10,7 +10,10 @@ allow hal_fingerprint_default mnt_vendor_file:dir r_dir_perms;
 allow hal_fingerprint_default persist_data_file:dir create_dir_perms;
 allow hal_fingerprint_default persist_data_file:file rw_file_perms;
 allow hal_fingerprint_default self:capability { sys_nice };
-allow hal_fingerprint_default vendor_displayfeature_device:chr_file rw_file_perms;
+# disp_feature: UDFPS HAL uses ioctl for LHBM (MI_DISP_IOCTL_SET_LOCAL_HBM) and event registration
+allow hal_fingerprint_default vendor_displayfeature_device:chr_file { ioctl read write open };
 allow hal_fingerprint_default vendor_touchfeature_device:chr_file rw_file_perms;
+# ioctl allowlist for MI_DISP_IOCTL_SET_LOCAL_HBM and MI_DISP_IOCTL_REGISTER_EVENT
+allowxperm hal_fingerprint_default vendor_displayfeature_device:chr_file ioctl { 0x440e 0x4007 };
 
 set_prop(hal_fingerprint_default, vendor_fingerprint_prop)

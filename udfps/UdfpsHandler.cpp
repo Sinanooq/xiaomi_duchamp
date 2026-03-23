@@ -128,11 +128,13 @@ class XiaomiMt6897UdfpsHandler : public UdfpsHandler {
                 int value = response->data[0];
                 LOG(DEBUG) << "received data: " << std::bitset<8>(value);
 
+                // LOCAL_HBM_UI_READY: display driver signals LHBM circle is drawn.
+                // Only send NIT command when UI is ready — do NOT send OFF here,
+                // onFingerUp() handles LHBM teardown to avoid race conditions.
                 bool localHbmUiReady = value & LOCAL_HBM_UI_READY;
-
-                mDevice->extCmd(
-                        mDevice, COMMAND_NIT,
-                        localHbmUiReady ? TARGET_BRIGHTNESS_1000NIT : TARGET_BRIGHTNESS_OFF);
+                if (localHbmUiReady) {
+                    mDevice->extCmd(mDevice, COMMAND_NIT, TARGET_BRIGHTNESS_1000NIT);
+                }
             }
         }).detach();
     }
@@ -140,32 +142,34 @@ class XiaomiMt6897UdfpsHandler : public UdfpsHandler {
     void onFingerDown(uint32_t x, uint32_t y, float /*minor*/, float /*major*/) {
         LOG(DEBUG) << __func__ << "x: " << x << ", y: " << y;
 
-        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_PRESSED);
+        // Notify touchscreen first — reduces latency before display ops
+        setFingerDown(true);
 
-        // Request HBM
+        // Request LHBM — 110nit is sufficient for optical sensor, 1000nit causes excessive brightness
         struct disp_local_hbm_req displayLhbmRequest = {
                 .base = displayBasePrimary,
-                .local_hbm_value = LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT,
+                .local_hbm_value = LHBM_TARGET_BRIGHTNESS_WHITE_110NIT,
         };
         ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
 
-        // Notify touchscreen about press status
-        setFingerDown(true);
+        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_PRESSED);
+        mDevice->extCmd(mDevice, COMMAND_NIT, TARGET_BRIGHTNESS_1000NIT);
     }
 
     void onFingerUp() {
         LOG(DEBUG) << __func__;
 
-        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_RELEASED);
-
-        // Disable HBM
+        // Disable LHBM immediately — prevents it from staying on screen
         struct disp_local_hbm_req displayLhbmRequest = {
                 .base = displayBasePrimary,
                 .local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
         };
         ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
 
-        // Notify touchscreen about press status
+        mDevice->extCmd(mDevice, COMMAND_NIT, TARGET_BRIGHTNESS_OFF);
+        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_RELEASED);
+
+        // Notify touchscreen last
         setFingerDown(false);
     }
 
@@ -182,6 +186,7 @@ class XiaomiMt6897UdfpsHandler : public UdfpsHandler {
             case AcquiredInfo::TOO_BRIGHT:
             case AcquiredInfo::IMMOBILE:
             case AcquiredInfo::LIFT_TOO_SOON:
+            case AcquiredInfo::VENDOR:
                 onFingerUp();
                 break;
             default:

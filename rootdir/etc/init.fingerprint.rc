@@ -7,6 +7,10 @@ on boot
     chmod 0666 /dev/goodix_fp
     chown system system /dev/goodix_fp
 
+    # mi_display disp_feature — UDFPS HAL uses this for LHBM/FOD events
+    chmod 0660 /dev/mi_display/disp_feature
+    chown system system /dev/mi_display/disp_feature
+
     # FOD display node
     chown system system /sys/class/drm/card0-DSI-1/disp_param
     chmod 0664 /sys/class/drm/card0-DSI-1/disp_param
