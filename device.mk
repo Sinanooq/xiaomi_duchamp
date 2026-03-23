@@ -16,7 +16,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
 # IMS
-$(call inherit-product, vendor/mediatek/ims/ims.mk)
+PRODUCT_PACKAGES += \
+    ImsService \
+    mtk-ims \
+    mtk-ims-telephony
 
 # A/B
 ifneq ($(WITH_GMS),true)
@@ -176,6 +179,8 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 PRODUCT_PACKAGES += \
    CarrierConfigOverlayDuchamp \
    FrameworksResOverlayDuchamp \
+   MtkImsOverlayDuchamp \
+   MtkImsTelephonyOverlayDuchamp \
    PowerOffAlarmOverlayDuchamp \
    NetworkStackOverlayDuchamp \
    NfcOverlayDuchamp \
